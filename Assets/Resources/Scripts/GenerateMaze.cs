@@ -87,6 +87,8 @@ public class GenerateMaze : MonoBehaviour
         }
 
         SetCamera();
+
+        // CreateMaze();
     }
 
     private void RemoveRoomWall(
@@ -246,7 +248,30 @@ public class GenerateMaze : MonoBehaviour
 
         stack.Push(rooms[0, 0]);
 
-        StartCoroutine(Coroutine_Generate());
+        // StartCoroutine(Coroutine_Generate());
+        generating = true;
+        bool flag = false;
+        while (!flag)
+        {
+            flag = GenerateStep();
+        }
+        RemoveRandomWalls();
+    }
+
+    public void ResetMaze()
+    {
+        for (int i = 0; i < numX; ++i)
+        {
+            for (int j = 0; j < numY; ++j)
+            {
+                rooms[i, j].SetDirFlag(Room.Directions.TOP, true);
+                rooms[i, j].SetDirFlag(Room.Directions.RIGHT, true);
+                rooms[i, j].SetDirFlag(Room.Directions.BOT, true);
+                rooms[i, j].SetDirFlag(Room.Directions.LEFT, true);
+                rooms[i, j].visited = false;
+            }
+        }
+        generating = false;
     }
 
     IEnumerator Coroutine_Generate()
@@ -261,7 +286,7 @@ public class GenerateMaze : MonoBehaviour
 
         RemoveRandomWalls();
 
-        generating = false;
+        // generating = false;
     }
 
     private void RemoveRandomWalls()
@@ -292,16 +317,17 @@ public class GenerateMaze : MonoBehaviour
                 rooms[i, j].visited = false;
             }
         }
+        generating = false;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        if (!generating)
         {
-            if (!generating)
-            {
-                CreateMaze();
-            }
+            CreateMaze();
         }
+        // }
     }
 }
