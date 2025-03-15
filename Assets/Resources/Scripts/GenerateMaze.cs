@@ -1,10 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class GenerateMaze : MonoBehaviour
@@ -68,6 +64,7 @@ public class GenerateMaze : MonoBehaviour
 
     private void Start()
     {
+        UnityEngine.Random.InitState(37);
         GetRoomSize();
 
         rooms = new Room[numX, numY];
@@ -269,6 +266,7 @@ public class GenerateMaze : MonoBehaviour
                 rooms[i, j].SetDirFlag(Room.Directions.BOT, true);
                 rooms[i, j].SetDirFlag(Room.Directions.LEFT, true);
                 rooms[i, j].visited = false;
+                rooms[i, j].resetCovered();
             }
         }
         generating = false;
@@ -306,18 +304,7 @@ public class GenerateMaze : MonoBehaviour
 
     private void Reset()
     {
-        for (int i = 0; i < numX; ++i)
-        {
-            for (int j = 0; j < numY; ++j)
-            {
-                rooms[i, j].SetDirFlag(Room.Directions.TOP, true);
-                rooms[i, j].SetDirFlag(Room.Directions.RIGHT, true);
-                rooms[i, j].SetDirFlag(Room.Directions.BOT, true);
-                rooms[i, j].SetDirFlag(Room.Directions.LEFT, true);
-                rooms[i, j].visited = false;
-            }
-        }
-        generating = false;
+        ResetMaze();
     }
 
     private void Update()

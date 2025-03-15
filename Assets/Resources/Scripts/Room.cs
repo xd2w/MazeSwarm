@@ -19,11 +19,20 @@ public class Room : MonoBehaviour
     [SerializeField]
     GameObject leftWall;
 
+    [SerializeField]
+    GameObject floorPanel;
+
+    private RoomTrigger trigger;
+
+
+
     Dictionary<Directions, GameObject> walls = new Dictionary<Directions, GameObject>();
 
     public Vector2Int Index { get; set; }
 
     public bool visited { get; set; } = false;
+
+    public bool covered { get; private set; } = false;
 
     Dictionary<Directions, bool> dirFlags = new Dictionary<Directions, bool>();
 
@@ -33,6 +42,8 @@ public class Room : MonoBehaviour
         walls[Directions.BOT] = botWall;
         walls[Directions.RIGHT] = rightWall;
         walls[Directions.LEFT] = leftWall;
+        trigger = floorPanel.GetComponent<RoomTrigger>();
+
     }
 
     private void SetActivate(Directions dir, bool flag)
@@ -45,6 +56,19 @@ public class Room : MonoBehaviour
         dirFlags[dir] = flag;
         SetActivate(dir, flag);
     }
+
+    public void resetCovered()
+    {
+        covered = false;
+        trigger.ResetFloor();
+    }
+
+    public void flagCovered()
+    {
+        covered = true;
+    }
+
+
 
 
 }

@@ -1,6 +1,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RLAgents : Agent
@@ -14,16 +15,21 @@ public class RLAgents : Agent
     [Tooltip("whether this is a traning mode or gameplay mode")]
     public bool traningMode;
 
+    [SerializeField]
+    public bool turnoff = false;
+
     private bool frozen = false;
 
     [Tooltip("The agents Camera")]
     public Camera agentCamera;
 
-    private Vector3 origin = Vector3.zero;
+    private Vector3 origin = new Vector3(70, 70, 0);
 
     private GenerateMaze maze;
 
     private bool reset = false;
+
+    private Room room;
 
     public override void Initialize()
     {
@@ -32,14 +38,21 @@ public class RLAgents : Agent
         // if not traning, no max steps, plays forever
         if (!traningMode) MaxStep = 0; // 0==infty
 
+        GameObject agent = GameObject.FindGameObjectWithTag("agent");
+        Physics2D.IgnoreCollision(agent.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+
         Debug.Log("Initialised");
 
         lastPos = transform.position;
+
+        room = null;
 
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        if (turnoff) return;
+
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
 
@@ -77,28 +90,45 @@ public class RLAgents : Agent
         // transform.rotation = Quaternion;
     }
 
-    // public override void CollectObservations(VectorSensor sensor)
-    // {
-    //     // base.CollectObservations(sensor);
-    //     sensor.AddObservation(transform.position.x);
-    //     sensor.AddObservation(transform.position.y);
-    // }
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        // base.CollectObservations(sensor);
+        sensor.AddObservation(rigidbody.position.x);
+        sensor.AddObservation(rigidbody.position.y);
+
+        sensor.AddObservation(rigidbody.linearVelocityX);
+        sensor.AddObservation(rigidbody.linearVelocityY);
+    }
 
     public override void OnEpisodeBegin()
     {
         // 0 out the velocity so it strats stationary
         rigidbody.linearVelocity = Vector2.zero;
-        rigidbody.position = Vector2.zero;
+        rigidbody.position = origin;
         reset = true;
     }
+
+
     public void OnCollisionEnter2D(Collision2D collision)
     {
         AddReward(-0.01f);
     }
 
-    public void OllisionStay2D(Collision2D collision)
+    public void OnCollisionStay2D(Collision2D collision)
     {
         AddReward(-0.01f);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Debug.Log("OnTrigger working");
+        room = collision.gameObject.GetComponentInParent<Room>();
+        if (room == null) return;
+
+        if (!room.covered)
+        {
+            AddReward(1f);
+        }
     }
 
     private void Update()
@@ -118,14 +148,16 @@ public class RLAgents : Agent
         // {
         //     AddReward(-0.01f);
         // }
-        AddReward(0.05f * Vector2.Distance(origin, transform.position) / (133 * Mathf.Sqrt(2)));
+        // AddReward(0.05f * Vector2.Distance(origin, transform.position) / (133 * Mathf.Sqrt(2)));
+
+        AddReward(-0.01f);
 
     }
 
     private void Reset()
     {
         rigidbody.linearVelocity = Vector2.zero;
-        rigidbody.position = Vector2.zero;
+        rigidbody.position = origin;
         maze.ResetMaze();
     }
 

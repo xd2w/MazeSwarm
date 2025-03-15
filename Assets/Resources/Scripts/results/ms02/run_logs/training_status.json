@@ -2,22 +2,31 @@
     "RLAgents": {
         "checkpoints": [
             {
-                "steps": 11056,
-                "file_path": "results/ms02/RLAgents/RLAgents-11056.onnx",
-                "reward": 55.08809162290008,
-                "creation_time": 1741805016.593396,
+                "steps": 44000,
+                "file_path": "results/ms02/RLAgents/RLAgents-44000.onnx",
+                "reward": 0.9954712527657026,
+                "creation_time": 1741805521.058007,
                 "auxillary_file_paths": [
-                    "results/ms02/RLAgents/RLAgents-11056.pt"
+                    "results/ms02/RLAgents/RLAgents-44000.pt"
+                ]
+            },
+            {
+                "steps": 98000,
+                "file_path": "results/ms02/RLAgents/RLAgents-98000.onnx",
+                "reward": 0.16185878810938448,
+                "creation_time": 1741809305.6796422,
+                "auxillary_file_paths": [
+                    "results/ms02/RLAgents/RLAgents-98000.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 11056,
+            "steps": 98000,
             "file_path": "results/ms02/RLAgents.onnx",
-            "reward": 55.08809162290008,
-            "creation_time": 1741805016.593396,
+            "reward": 0.16185878810938448,
+            "creation_time": 1741809305.6796422,
             "auxillary_file_paths": [
-                "results/ms02/RLAgents/RLAgents-11056.pt"
+                "results/ms02/RLAgents/RLAgents-98000.pt"
             ]
         }
     },

@@ -1,0 +1,29 @@
+{
+    "RLAgents": {
+        "checkpoints": [
+            {
+                "steps": 495000,
+                "file_path": "results/ms08/RLAgents/RLAgents-495000.onnx",
+                "reward": -0.29000002034008504,
+                "creation_time": 1741835944.2176151,
+                "auxillary_file_paths": [
+                    "results/ms08/RLAgents/RLAgents-495000.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 495000,
+            "file_path": "results/ms08/RLAgents.onnx",
+            "reward": -0.29000002034008504,
+            "creation_time": 1741835944.2176151,
+            "auxillary_file_paths": [
+                "results/ms08/RLAgents/RLAgents-495000.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2"
+    }
+}
