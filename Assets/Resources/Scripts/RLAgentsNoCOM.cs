@@ -5,7 +5,7 @@ using Unity.MLAgents.Sensors;
 // using Unity.VisualScripting;
 using UnityEngine;
 
-public class RLAgents : Agent
+public class RLAgentsNoCOM : Agent
 {
     [SerializeField]
     private float speed = 2000.0f;
@@ -32,11 +32,6 @@ public class RLAgents : Agent
 
     private Room room;
 
-    private List<GameObject> listOfAgents = new List<GameObject>();
-    private List<Vector2> nearestNpos = new List<Vector2>();
-
-    [Tooltip("The Number of nearest agents that can comunicate")]
-    public int n_deg_connection = 3;
 
     public override void Initialize()
     {
@@ -53,20 +48,6 @@ public class RLAgents : Agent
         lastPos = transform.position;
 
         room = null;
-        Transform child;
-        for (int i = 0; i < maze.transform.childCount; i++)
-        {
-            child = maze.transform.GetChild(i);
-            if (child.tag == "agent")
-            {
-                listOfAgents.Add(child.gameObject);
-                Debug.Log(i.ToString());
-            }
-        }
-        for (int i = 0; i < n_deg_connection; i++)
-        {
-            nearestNpos.Add(transform.position);
-        }
 
     }
 
@@ -119,49 +100,6 @@ public class RLAgents : Agent
 
         sensor.AddObservation(rigidbody.linearVelocityX);
         sensor.AddObservation(rigidbody.linearVelocityY);
-
-        // com observations here
-        // GameObject[] listOfAgents = GameObject.FindGameObjectsWithTag("agent");
-        Rigidbody2D agentbody;
-
-        List<float> dist = new List<float>();
-        dist.Clear();
-
-        List<Vector2> pos = new List<Vector2>();
-        pos.Clear();
-
-        float temp;
-        int index = -1;
-
-        for (int i = 0; i < listOfAgents.Count; i++)
-        {
-            agentbody = listOfAgents[i].GetComponent<Rigidbody2D>();
-            pos.Add(agentbody.transform.position);
-            temp = Vector3.Distance(agentbody.transform.position, rigidbody.transform.position);
-            if (temp == 0)
-            {
-                temp = 1000000f;
-            }
-            dist.Add(temp);
-
-        }
-
-        for (int k = 0; k < n_deg_connection; k++)
-        {
-
-            temp = 100000000f;
-            for (int i = 0; i < dist.Count; i++)
-            {
-                if (dist[i] < temp)
-                {
-                    temp = dist[i];
-                    index = i;
-                }
-            }
-            sensor.AddObservation(temp);
-            nearestNpos[k] = pos[index];
-            dist[index] = 100000000f;
-        }
     }
 
     public override void OnEpisodeBegin()
@@ -199,11 +137,6 @@ public class RLAgents : Agent
     {
         // Draw a line from the breap tip to nearest flower for us
         Debug.DrawLine(transform.position, origin, Color.green);
-
-        for (int i = 0; i < n_deg_connection; i++)
-        {
-            Debug.DrawLine(transform.position, nearestNpos[i], Color.blue);
-        }
 
         if (reset)
         {
